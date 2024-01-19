@@ -2,6 +2,7 @@ from pyperclip import copy
 from requests import get
 from sys import argv as args
 from logos import get_arch_logo, dye
+from json import load
 
 del args[0]
 
@@ -13,8 +14,21 @@ def main(mode="mirrors"):
     # Define command behaviors
     def build_mirror_list():
 
+        def build_request_string():
+            # https://archlinux.org/mirrorlist/?country=US&protocol=http&protocol=https&ip_version=4
+
+            url = "https://archlinux.org/mirrorlist/?"
+            with open("config/config.json") as file:
+                settings = load(file)['mirrors']
+
+            for k, v in settings.items():
+                for i in v:
+                    url += f"{k}={i}&"
+
+            return url[:-1]
+
         print(dye("Downloading mirror list", "yellow"))
-        mirror_list = get("https://archlinux.org/mirrorlist/?country=US&protocol=http&protocol=https&ip_version=4")
+        mirror_list = get(build_request_string())
         mirrors = mirror_list.text
 
         new_mirrors = ""

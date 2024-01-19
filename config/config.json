@@ -1,0 +1,7 @@
+{
+  "mirrors": {
+    "country": ["US"],
+    "protocol": ["http", "https"],
+    "ip_version": [4]
+  }
+}
